@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CloudDock Bridge</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="popup-page">
+    <main>
+      <header>
+        <img src="icons/icon32.png" width="28" height="28" alt="" />
+        <div><strong>CloudDock</strong><small>安全跳转</small></div>
+      </header>
+      <p id="current-url" class="url">正在读取当前页面…</p>
+      <p id="status" class="status" role="status"></p>
+      <button id="open" class="primary" type="button" disabled>在 CloudDock 中打开</button>
+      <button id="options" class="secondary" type="button">配置允许规则</button>
+      <p class="protocol-note">首次打开时，Chrome 会询问是否允许启动 CloudDock；请在浏览器提示中确认。</p>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

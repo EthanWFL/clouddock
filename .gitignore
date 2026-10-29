@@ -1,0 +1,26 @@
+node_modules/
+out/
+dist/
+coverage/
+playwright-report/
+test-results/
+tmp/
+.DS_Store
+*.log
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.mobileprovision
+
+# Local data and editor state
+*.db
+*.sqlite
+*.sqlite3
+.idea/
+.vscode/

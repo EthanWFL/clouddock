@@ -1,0 +1,108 @@
+{
+  "name": "opsdock",
+  "version": "2.0.1",
+  "description": "CloudDock is a focused macOS workspace for Alibaba Cloud ACK, Kafka, MSE, DMS, Codeup, and SLS consoles.",
+  "main": "./out/main/index.js",
+  "author": "CloudDock",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "npm run typecheck && electron-vite build",
+    "build:e2e": "npm run typecheck && OPSDOCK_E2E_BUILD=1 electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test:unit": "vitest run --config vitest.config.ts",
+    "test:renderer": "vitest run --config vitest.renderer.config.ts",
+    "test": "npm run typecheck && npm run test:unit && npm run test:renderer && npm run test:extension",
+    "test:extension": "node --test chrome-extension/tests/*.test.mjs",
+    "build:extension": "node scripts/verify-chrome-extension.mjs",
+    "test:e2e": "npm run build:e2e && playwright test",
+    "package:mac": "npm run build && electron-builder --mac dmg --arm64",
+    "verify:release": "node scripts/verify-release.mjs"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@electron/fuses": "1.8.0",
+    "@playwright/test": "1.58.2",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@types/node": "24.10.13",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "5.1.4",
+    "cmdk": "1.1.1",
+    "electron": "43.8.4",
+    "electron-builder": "26.15.7",
+    "electron-vite": "5.0.0",
+    "jsdom": "27.4.0",
+    "lucide-react": "0.468.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "typescript": "7.0.2",
+    "vite": "7.3.7",
+    "vitest": "4.1.12",
+    "zustand": "5.0.11"
+  },
+  "build": {
+    "appId": "io.github.wuerlong.clouddock",
+    "productName": "CloudDock",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "protocols": [
+      {
+        "name": "CloudDock Open URL",
+        "schemes": [
+          "clouddock",
+          "opsdock"
+        ]
+      }
+    ],
+    "files": [
+      "out/**/*",
+      "package.json",
+      "LICENSE"
+    ],
+    "electronDist": "node_modules/electron/dist",
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "build/AppIcon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "identity": "-",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "title": "CloudDock ${version}"
+    },
+    "afterPack": "scripts/after-pack.mjs",
+    "electronFuses": {
+      "runAsNode": false,
+      "enableCookieEncryption": true,
+      "enableNodeOptionsEnvironmentVariable": false,
+      "enableNodeCliInspectArguments": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true,
+      "grantFileProtocolExtraPrivileges": false,
+      "resetAdHocDarwinSignature": true
+    }
+  }
+}

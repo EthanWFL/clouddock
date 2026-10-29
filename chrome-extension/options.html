@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CloudDock Bridge 设置</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="options-page">
+    <main>
+      <h1>CloudDock Bridge 允许规则</h1>
+      <p class="intro">默认不允许任何网站。只有匹配已启用规则的 HTTPS 当前页，才可通过按钮或右键菜单交给 CloudDock。</p>
+      <form id="rule-form">
+        <label>域名规则<input id="host" required placeholder="console.example.com 或 *.example.com" autocomplete="off" /></label>
+        <label>路径前缀<input id="path" required value="/" placeholder="/ 或 /projects/" autocomplete="off" /></label>
+        <button class="primary" type="submit">添加规则</button>
+      </form>
+      <p id="message" class="status" role="status"></p>
+      <section>
+        <h2>已配置规则</h2>
+        <div id="empty" class="empty">尚未配置允许规则。</div>
+        <ul id="rules"></ul>
+      </section>
+      <p class="footnote">规则仅用于比较当前标签页 URL；扩展不读取页面内容、Cookie、表单或浏览记录，也没有网站主机权限。扩展不会静默唤起应用；Chrome 首次打开 CloudDock 时仍会显示外部协议确认。</p>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

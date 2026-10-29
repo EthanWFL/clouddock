@@ -1,0 +1,42 @@
+:root {
+  color: #e8eef5;
+  background: #1d232b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { padding: 20px; }
+.popup-page main { width: 330px; }
+.options-page main { width: min(760px, calc(100vw - 32px)); margin: 28px auto; }
+header { display: flex; align-items: center; gap: 10px; }
+header div { display: grid; }
+header small, .intro, .footnote { color: #9caaba; }
+h1 { margin: 0 0 8px; font-size: 22px; }
+h2 { margin-top: 26px; font-size: 15px; }
+.url { overflow: hidden; margin: 18px 0 8px; color: #bac7d5; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.status { min-height: 20px; color: #ffaca4; font-size: 12px; }
+.status.success { color: #70d7ca; }
+button { min-height: 34px; border: 0; border-radius: 7px; padding: 0 13px; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid #69a9e6; outline-offset: 2px; }
+button:disabled { opacity: .45; cursor: default; }
+.primary { background: #287bc2; }
+.primary:hover:not(:disabled) { background: #3188d0; }
+.secondary { width: 100%; margin-top: 8px; background: #303a46; }
+.popup-page .primary { width: 100%; }
+form { display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 12px; margin-top: 24px; }
+label { display: grid; gap: 6px; color: #b9c5d2; font-size: 12px; }
+input { height: 36px; border: 1px solid #465465; border-radius: 7px; padding: 0 10px; color: inherit; background: #252d37; }
+ul { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; min-height: 46px; border: 1px solid #364250; border-radius: 8px; padding: 6px 8px 6px 12px; background: #242c35; }
+code { overflow: hidden; color: #d8e2ed; text-overflow: ellipsis; white-space: nowrap; }
+.danger { color: #ffaaa1; background: transparent; }
+.danger:hover { background: #4a2b2d; }
+.empty { border: 1px dashed #435160; border-radius: 8px; padding: 18px; color: #94a3b3; text-align: center; }
+.footnote { margin-top: 28px; font-size: 12px; line-height: 1.6; }
+.protocol-note { margin: 12px 2px 0; color: #8f9dad; font-size: 11px; line-height: 1.45; }
+
+@media (max-width: 620px) {
+  form { grid-template-columns: 1fr; }
+}
