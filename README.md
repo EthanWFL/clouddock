@@ -40,11 +40,22 @@ CloudDock 把常用控制台、地域入口、收藏和工作标签放在一起�
 
 ## 快速开始
 
-目前公开仓库提供源码，尚未发布可下载的 DMG。支持在 **Apple Silicon 或 Intel Mac** 上运行和构建，分别生成 `arm64` 和 `x64` 安装包；暂不提供 Windows 和 Linux 安装包。Intel 包已纳入打包与架构校验，Intel 真机上的登录、安装与日常操作仍需验收。
+从 [GitHub Releases](https://github.com/EthanWFL/clouddock/releases) 下载安装包，无需安装 Node.js。当前可下载版本为 **2.1.0**，按“关于本机”中的芯片或处理器选择：
+
+| Mac 类型 | 下载 |
+| --- | --- |
+| Apple Silicon（M 系列芯片） | [CloudDock-2.1.0-arm64.dmg](https://github.com/EthanWFL/clouddock/releases/download/2.1.0/CloudDock-2.1.0-arm64.dmg) |
+| Intel 处理器 | [CloudDock-2.1.0-x64.dmg](https://github.com/EthanWFL/clouddock/releases/download/2.1.0/CloudDock-2.1.0-x64.dmg) |
+
+下载后打开 DMG，将 CloudDock 拖入 Applications。详细安装步骤和 macOS 安全提示见下方“构建并安装 DMG”。暂不提供 Windows 和 Linux 安装包；Intel 包已通过构建与架构校验，Intel 真机上的登录、安装与日常操作仍需验收。
+
+安装包作为 Release 附件单独存储，不进入 Git 历史。可下载 [SHA256SUMS.txt](https://github.com/EthanWFL/clouddock/releases/download/2.1.0/SHA256SUMS.txt)，在下载目录执行 `shasum -a 256 -c SHA256SUMS.txt`。只下载一种架构时，另一项会提示缺失，已下载文件应显示 `OK`。
 
 系统要求为 **macOS 12 Monterey 或更新版本**；支持 Intel 不代表支持 macOS 11 或更早系统。
 
-从源码运行需要 Node.js 和 npm。推荐使用 [.nvmrc](.nvmrc) 指定的 Node.js 24.18.0 与 npm 11，最低 Node.js 版本为 22.12.0。
+### 从源码运行
+
+需要 Node.js 和 npm。推荐使用 [.nvmrc](.nvmrc) 指定的 Node.js 24.18.0 与 npm 11，最低 Node.js 版本为 22.12.0。主分支可能包含晚于安装包的文档或代码更新；复现 2.1.0 安装包时，在克隆后先执行 `git checkout 2.1.0`。
 
 ```bash
 git clone https://github.com/EthanWFL/clouddock.git

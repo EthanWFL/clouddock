@@ -1,6 +1,6 @@
 {
   "name": "opsdock",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "CloudDock is a focused macOS workspace for Alibaba Cloud ACK, Kafka, MSE, DMS, Codeup, and SLS consoles.",
   "main": "./out/main/index.js",
   "author": "CloudDock",
