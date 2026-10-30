@@ -22,7 +22,7 @@ CloudDock 不是阿里云产品的替代控制台，而是一个面向 macOS 的
 - 支持收藏具体集群、工作负载、Topic、消费者组、DMS 工作台、Codeup 代码库、Flow 流水线和 SLS 日志查询页面。
 - 恢复上次关闭时的标签页，后台标签延迟加载。
 - `Command+K` 打开始终为空且不读取剪贴板的快速切换器，用于搜索标签、最近关闭、收藏、模块快捷入口、最近访问和产品入口，也可手动输入受支持的控制台 URL；顶部“打开链接”和 `Command+T` 才进入链接打开模式，从剪贴板消息提取、去重并预览最多 10 个受支持 URL。同名标签用产品上下文和 URL 路径区分，标签按当前、固定、处理中、待处理、未标记、已完成及最近活跃时间排序。输入“操作: 标签关键词”可执行固定、任务状态或关闭操作，不带冒号时保持普通搜索。
-- 构建 Apple Silicon ARM64、无 Developer ID 和公证、带 ad-hoc 完整性签名的 DMG。
+- 分别构建 Apple Silicon ARM64 和 Intel x64、无 Developer ID 和公证、带 ad-hoc 完整性签名的 DMG。
 
 ### 2.2 不做的内容
 
@@ -53,7 +53,7 @@ CloudDock 不是阿里云产品的替代控制台，而是一个面向 macOS 的
 | 下载 | 已识别控制台页面允许并显示原生保存窗口与进度/结果反馈，外部页面继续阻止 |
 | 打开链接 | `Command+K` 以空查询打开；顶部按钮和 `Command+T` 可从消息中提取、去重、预览并批量打开最多 10 个已接入或精确允许的临时控制台 HTTPS 链接 |
 | 界面 | 中文、浅色 |
-| 安装包 | Apple Silicon ARM64、无 Developer ID/公证、ad-hoc 完整性签名 DMG |
+| 安装包 | Apple Silicon ARM64 / Intel x64 独立 DMG，无 Developer ID/公证，带 ad-hoc 完整性签名 |
 
 ## 4. 技术栈
 
@@ -387,7 +387,7 @@ ACK、Kafka、MSE 的地域入口和 Codeup 的“代码管理”都是返回当
 
 真实阿里云登录和控制台页面不能放进自动化测试。每个候选安装包按清单手工验证一次：RAM 登录、ACK、Kafka、MSE、DMS、Codeup、SLS、两个地域、模块配置、收藏、真实未保存表单的关闭保护、工具栏反馈布局、重启恢复、退出登录和 Gatekeeper 首次打开流程。
 
-发布前运行 `npm run verify:release`，统一执行类型检查、单元测试、Renderer 测试、Electron E2E、依赖审计、ARM64 DMG 打包、镜像校验、签名校验、架构检查、Fuse 检查和 Renderer 依赖边界检查，并输出 SHA-256。
+发布前运行 `npm run verify:release`，统一执行类型检查、单元测试、Renderer 测试、Electron E2E、依赖审计、ARM64 与 Intel x64 DMG 打包、镜像校验、签名校验、架构检查、Fuse 检查和 Renderer 依赖边界检查，并输出 SHA-256。
 
 ## 11. 目录规划
 
@@ -442,7 +442,7 @@ opsdock/
 
 ### 阶段 3：打包验收
 
-生成 ARM64、无 Developer ID 和公证、带 ad-hoc 完整性签名的 DMG，在当前 Mac 和至少一台同事的 Apple Silicon Mac 上完成验收。预计 1 至 2 个工作日。
+分别生成 ARM64 与 Intel x64、无 Developer ID 和公证、带 ad-hoc 完整性签名的 DMG，在 Apple Silicon 和 Intel Mac 上分别完成验收。预计 1 至 2 个工作日。
 
 总工期估算为 7 至 12 个工作日，前提是阿里云登录和控制台页面在 Electron 中正常工作。
 

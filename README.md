@@ -7,7 +7,7 @@
 <p align="center">在一个 macOS 窗口里管理阿里云控制台。</p>
 
 <p align="center">
-  Apple Silicon · Electron + React + TypeScript · <a href="LICENSE">MIT License</a>
+  macOS · Apple Silicon / Intel · <a href="LICENSE">MIT License</a>
 </p>
 
 CloudDock 把常用控制台、地域入口、收藏和工作标签放在一起。适合经常在集群、数据库、代码仓库和日志页面之间切换的开发者与运维人员。
@@ -40,9 +40,11 @@ CloudDock 把常用控制台、地域入口、收藏和工作标签放在一起�
 
 ## 快速开始
 
-目前公开仓库提供源码，尚未发布可下载的 DMG。请在 **Apple Silicon Mac** 上运行或构建；暂未提供 Intel Mac、Windows 和 Linux 安装包。
+目前公开仓库提供源码，尚未发布可下载的 DMG。支持在 **Apple Silicon 或 Intel Mac** 上运行和构建，分别生成 `arm64` 和 `x64` 安装包；暂不提供 Windows 和 Linux 安装包。Intel 包已纳入打包与架构校验，Intel 真机上的登录、安装与日常操作仍需验收。
 
-需要 Node.js 和 npm。推荐使用 [.nvmrc](.nvmrc) 指定的 Node.js 24.18.0 与 npm 11，最低 Node.js 版本为 22.12.0。
+系统要求为 **macOS 12 Monterey 或更新版本**；支持 Intel 不代表支持 macOS 11 或更早系统。
+
+从源码运行需要 Node.js 和 npm。推荐使用 [.nvmrc](.nvmrc) 指定的 Node.js 24.18.0 与 npm 11，最低 Node.js 版本为 22.12.0。
 
 ```bash
 git clone https://github.com/EthanWFL/clouddock.git
@@ -59,13 +61,27 @@ npm run dev
 npm run package:mac
 ```
 
-安装包输出到 `dist/CloudDock-<版本>-arm64.dmg`：
+默认一次生成两种架构的安装包，按“关于本机”中的芯片或处理器选择：
+
+| Mac 类型 | 安装包 |
+| --- | --- |
+| Apple Silicon（M 系列芯片） | `dist/CloudDock-<版本>-arm64.dmg` |
+| Intel 处理器 | `dist/CloudDock-<版本>-x64.dmg` |
+
+也可以单独构建：
+
+```bash
+npm run package:mac:arm64
+npm run package:mac:x64
+```
+
+两种包分别包含对应架构的程序，不是 Universal 合并包。安装方法相同：
 
 1. 打开 DMG，将 CloudDock 拖入 Applications。
 2. 首次启动若被 macOS 拦截，可在 Finder 中按住 Control 点击应用并选择“打开”，或在“系统设置 → 隐私与安全性”中选择“仍要打开”。
 3. 更新安装前，使用 `Command+Q` 完全退出旧版，再覆盖安装。
 
-当前构建使用 ad-hoc 完整性签名，尚无 Developer ID 签名或 Apple 公证。不要关闭 Gatekeeper 或移除隔离属性来绕过系统检查。重新打包前，也请退出从 `dist/mac-arm64/CloudDock.app` 启动的应用。
+当前构建使用 ad-hoc 完整性签名，尚无 Developer ID 签名或 Apple 公证。不要关闭 Gatekeeper 或移除隔离属性来绕过系统检查。重新打包前，也请退出从 `dist/mac-arm64/CloudDock.app` 或 `dist/mac/CloudDock.app` 启动的应用。
 
 <details>
 <summary>Electron 下载较慢时</summary>
@@ -82,7 +98,11 @@ ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ npm ci
 ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ node node_modules/electron/install.js
 ```
 
-打包直接使用本地 `node_modules/electron/dist`。
+打包时 electron-builder 按目标架构下载并缓存 Electron，首次构建两种架构需要分别下载。可通过同一个镜像变量运行打包：
+
+```bash
+ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ npm run package:mac
+```
 
 </details>
 
@@ -172,12 +192,14 @@ CLOUDDOCK_URL_ALLOWLIST="docs.example.com,*.tools.example.com" npm run dev
 | `npm test` | 类型检查、单元测试、Renderer 测试和扩展测试 |
 | `npm run test:e2e` | 构建测试版并运行 Electron 端到端测试 |
 | `npm run build:extension` | 验证 Chrome 扩展文件与权限配置 |
-| `npm run package:mac` | 构建 ARM64 DMG |
-| `npm run verify:release` | 完整发布验证，包含测试、依赖审计、打包与产物校验 |
+| `npm run package:mac` | 构建 ARM64 和 Intel x64 两个 DMG |
+| `npm run package:mac:arm64` | 仅构建 Apple Silicon 安装包 |
+| `npm run package:mac:x64` | 仅构建 Intel 安装包 |
+| `npm run verify:release` | 完整发布验证，包含测试、依赖审计，以及两种架构的打包与产物校验 |
 
 只运行发布代码检查、不生成安装包：`npm run verify:release -- --skip-package`。
 
-E2E 使用本地模拟控制台。真实 RAM/MFA、企业 SSO、控制台页面变化和另一台 Mac 的安装行为仍需人工验证；历史测试通过不代表所有账号和环境均兼容。目前未提供自动更新。
+E2E 使用当前 Mac 架构的 Electron 和本地模拟控制台，不会因构建了两种安装包就自动完成两种芯片的运行测试。发布校验会分别检查两种 DMG 的完整性、签名、主程序及 Electron 框架架构、URL schemes 和 Fuses。真实 RAM/MFA、企业 SSO、控制台页面变化及 Intel 真机安装仍需人工验证。目前未提供自动更新。
 
 - [技术设计](docs/technical-design.md)：模块划分、数据模型与安全边界。
 - [人工验收清单](docs/manual-acceptance.md)：发布检查项与历史验证记录。

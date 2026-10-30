@@ -1,6 +1,6 @@
 {
   "name": "opsdock",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "CloudDock is a focused macOS workspace for Alibaba Cloud ACK, Kafka, MSE, DMS, Codeup, and SLS consoles.",
   "main": "./out/main/index.js",
   "author": "CloudDock",
@@ -22,7 +22,9 @@
     "test:extension": "node --test chrome-extension/tests/*.test.mjs",
     "build:extension": "node scripts/verify-chrome-extension.mjs",
     "test:e2e": "npm run build:e2e && playwright test",
-    "package:mac": "npm run build && electron-builder --mac dmg --arm64",
+    "package:mac": "npm run build && electron-builder --mac",
+    "package:mac:arm64": "npm run build && electron-builder --mac dmg --arm64",
+    "package:mac:x64": "npm run build && electron-builder --mac dmg --x64",
     "verify:release": "node scripts/verify-release.mjs"
   },
   "dependencies": {
@@ -73,7 +75,6 @@
       "package.json",
       "LICENSE"
     ],
-    "electronDist": "node_modules/electron/dist",
     "mac": {
       "category": "public.app-category.developer-tools",
       "icon": "build/AppIcon.icns",
@@ -81,7 +82,8 @@
         {
           "target": "dmg",
           "arch": [
-            "arm64"
+            "arm64",
+            "x64"
           ]
         }
       ],

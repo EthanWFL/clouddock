@@ -20,7 +20,7 @@ function printUsage() {
   console.log(`Usage: npm run verify:release -- [--skip-package]
 
 Runs typecheck, unit tests, renderer tests, Electron E2E tests, npm audit,
-ARM64 DMG packaging, and release artifact validation.
+ARM64 and Intel x64 DMG packaging, and release artifact validation.
 
 Options:
   --skip-package  Skip DMG packaging and artifact validation.
@@ -76,7 +76,7 @@ function expandArtifactName(template, values) {
   return expanded;
 }
 
-function releasePaths() {
+function releasePaths(arch) {
   const productName = packageJson.build?.productName ?? packageJson.name;
   const outputDirectory = resolve(
     projectRoot,
@@ -87,10 +87,10 @@ function releasePaths() {
   const artifactName = expandArtifactName(artifactTemplate, {
     productName,
     version: packageJson.version,
-    arch: "arm64",
+    arch,
     ext: "dmg",
   });
-  const appPath = join(outputDirectory, "mac-arm64", `${productName}.app`);
+  const appPath = join(outputDirectory, arch === "x64" ? "mac" : `mac-${arch}`, `${productName}.app`);
 
   return {
     productName,
@@ -205,8 +205,9 @@ function verifyProtocolDeclarations(appPath) {
   console.log(`  ${bundleIdentifier}: ${REQUIRED_URL_SCHEMES.join(", ")}`);
 }
 
-async function verifyArtifacts(packageStartedAt) {
-  const { dmgPath, appPath, executablePath } = releasePaths();
+async function verifyArtifacts(packageStartedAt, arch) {
+  console.log(`\n==> ${arch} release artifacts`);
+  const { dmgPath, appPath, executablePath } = releasePaths(arch);
   const dmgDetails = await assertPath(dmgPath, "file");
   await assertPath(appPath, "directory");
   await assertPath(executablePath, "file");
@@ -228,18 +229,26 @@ async function verifyArtifacts(packageStartedAt) {
   const fileDescription = runCommand("Mach-O file type", "/usr/bin/file", [executablePath], {
     capture: true,
   });
-  assert(/Mach-O.*\barm64\b/.test(fileDescription), `Expected an arm64 Mach-O executable, got: ${fileDescription}`);
+  const expectedArchitecture = arch === "x64" ? "x86_64" : "arm64";
+  assert(fileDescription.includes("Mach-O") && fileDescription.includes(expectedArchitecture),
+    `Expected a ${expectedArchitecture} Mach-O executable, got: ${fileDescription}`);
   console.log(fileDescription);
 
   const architectures = runCommand("Mach-O architectures", "/usr/bin/lipo", [
     "-archs",
     executablePath,
   ], { capture: true });
-  assert(architectures === "arm64", `Expected only arm64, got: ${architectures}`);
+  assert(architectures === expectedArchitecture, `Expected only ${expectedArchitecture}, got: ${architectures}`);
   console.log(`  ${architectures}`);
 
+  const frameworkArchitectures = runCommand("Electron framework architectures", "/usr/bin/lipo", [
+    "-archs",
+    join(appPath, "Contents", "Frameworks", "Electron Framework.framework", "Versions", "A", "Electron Framework"),
+  ], { capture: true });
+  assert(frameworkArchitectures === expectedArchitecture,
+    `Expected Electron framework ${expectedArchitecture}, got: ${frameworkArchitectures}`);
+
   await verifyFuses(appPath);
-  await verifyRendererBundle();
   const digest = await sha256(dmgPath);
   console.log(`\nSHA-256: ${digest}  ${relative(projectRoot, dmgPath)}`);
 }
@@ -251,8 +260,8 @@ async function main() {
     return;
   }
   if (!options.skipPackage) {
-    assert(process.platform === "darwin", "ARM64 DMG verification requires macOS");
-    assert(process.arch === "arm64", `ARM64 packaging requires an arm64 Node.js process, got ${process.arch}`);
+    assert(process.platform === "darwin", "DMG verification requires macOS");
+    assert(["arm64", "x64"].includes(process.arch), `Unsupported macOS host architecture: ${process.arch}`);
   }
 
   console.log(`CloudDock ${packageJson.version} release verification`);
@@ -263,18 +272,20 @@ async function main() {
   runNpm("TypeScript typecheck", ["run", "typecheck"]);
   runNpm("Unit tests", ["run", "test:unit"]);
   runNpm("Renderer tests", ["run", "test:renderer"]);
+  runNpm("Chrome extension tests", ["run", "test:extension"]);
   runNpm("Electron E2E tests", ["run", "test:e2e"]);
   runNpm("Dependency audit", ["audit", "--audit-level=low"]);
 
   if (options.skipPackage) {
-    console.log("\n==> ARM64 DMG package and artifact checks skipped (--skip-package)");
+    console.log("\n==> ARM64 and Intel x64 DMG package and artifact checks skipped (--skip-package)");
     console.log("\nRelease code checks passed; package was not verified.");
     return;
   }
 
   const packageStartedAt = Date.now();
-  runNpm("ARM64 DMG package", ["run", "package:mac"]);
-  await verifyArtifacts(packageStartedAt);
+  runNpm("ARM64 and Intel x64 DMG packages", ["run", "package:mac"]);
+  for (const arch of ["arm64", "x64"]) await verifyArtifacts(packageStartedAt, arch);
+  await verifyRendererBundle();
   console.log("\nRelease verification passed.");
 }
 
