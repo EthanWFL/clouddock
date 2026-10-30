@@ -6,6 +6,8 @@
 
 <p align="center">在一个 macOS 窗口里管理阿里云控制台。</p>
 
+<p align="center">Alibaba Cloud console workspace for macOS</p>
+
 <p align="center">
   macOS · Apple Silicon / Intel · <a href="LICENSE">MIT License</a>
 </p>
@@ -13,6 +15,10 @@
 CloudDock 把常用控制台、地域入口、收藏和工作标签放在一起。适合经常在集群、数据库、代码仓库和日志页面之间切换的开发者与运维人员。
 
 你仍然使用阿里云原生页面和登录流程。CloudDock 不是阿里云官方客户端，不需要配置 AccessKey，也不调用产品 OpenAPI。
+
+CloudDock is an unofficial Alibaba Cloud (Aliyun) desktop client for macOS, built with Electron, React and TypeScript. It brings ACK, Kafka, MSE, DMS, Codeup and SLS consoles into one window with region shortcuts, bookmarks and persistent tabs. Separate installers are available for Apple Silicon and Intel Macs running macOS 12 or later; Intel hardware testing is still pending. Sign in through the original Alibaba Cloud pages—no AccessKey setup is required.
+
+[Download for macOS](https://github.com/EthanWFL/clouddock/releases/latest) · [Report an issue](https://github.com/EthanWFL/clouddock/issues)
 
 [快速开始](#快速开始) · [使用方法](#使用方法) · [快捷键](#快捷键) · [Chrome 扩展](#chrome-扩展) · [开发与验证](#开发与验证)
 
